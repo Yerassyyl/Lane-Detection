@@ -1,0 +1,46 @@
+# Lane finding Pipeline
+
+plt.imshow(image)
+plt.title("Input Image")
+plt.show()
+
+
+def lane_finding_pipeline(image):
+    
+    #Grayscale
+    gray_img = grayscale(image)
+    plt.imshow(gray_img)
+    plt.title("grayscale")
+    plt.show()
+    #Gaussian Smoothing
+    smoothed_img = gaussian_blur(img = gray_img, kernel_size = 5)
+    plt.imshow(smoothed_img)
+    plt.title("smoothed")
+    plt.show()
+    #Canny Edge Detection
+    canny_img = canny(img = smoothed_img, low_threshold = 180, high_threshold = 240)
+    plt.imshow(canny_img)
+    plt.title("canny")
+    plt.show()
+    #Region of interest
+    reg_of_interest = region_of_interest(img = canny_img, vertices = vertices)
+    plt.imshow(reg_of_interest)
+    plt.title("region of interest")
+    plt.show()
+    
+    #Hough Transform Lines
+    houghed_lines = hough_lines(img = reg_of_interest, rho = 1, theta = np.pi/180, threshold =8, min_line_len = 150, max_line_gap = 210)
+    plt.imshow(houghed_lines)
+    plt.title("houghed_lines")
+    plt.show()
+    
+    #Draw lines on edges
+    output = weighted_img(img = houghed_lines, initial_img = image, α=0.8, β=1., γ=0.)
+    
+    return output
+
+
+fig = plt.figure(figsize=(20, 10))
+plt.imshow(image)
+plt.imshow(lane_finding_pipeline(image))
+plt.show()
